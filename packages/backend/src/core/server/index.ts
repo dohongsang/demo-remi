@@ -1,8 +1,9 @@
 import dotenv from "dotenv";
 import { IncomingMessage, Server, ServerResponse } from "http";
-import "reflect-metadata";
-import { createExpressServer } from "routing-controllers";
+import * as passportRes from "passport";
+import { Action, createExpressServer } from "routing-controllers";
 import { Database } from "../db";
+import { Passport } from "../middlewares/passport.middleware";
 import { Runner } from "../websocket";
 
 dotenv.config();
@@ -16,7 +17,12 @@ export class Application {
     this.server = createExpressServer({
       routePrefix: process.env.PREFIX_ENDPOINT,
       controllers,
+      currentUserChecker: (action: Action) => action.request.user,
     });
+
+    const passport = new Passport();
+    passport.usePassportJWT();
+    // passport.useLocalJWT();
 
     const websocket = new Runner();
     websocket.init(this.server);

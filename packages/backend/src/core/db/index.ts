@@ -2,13 +2,13 @@ import { DataSource } from "typeorm";
 import entities from "./entities";
 
 export class Database {
-  database: DataSource;
+  static datasource: DataSource;
 
   constructor() {}
 
   init() {
-    if (!this.database) {
-      this.database = new DataSource({
+    if (!Database.datasource) {
+      Database.datasource = new DataSource({
         type: "postgres",
         host: process.env.POSTGRES_HOST,
         port: parseInt(process.env.POSTGRES_PORT ?? "5432"),
@@ -21,11 +21,12 @@ export class Database {
       });
     }
     this.connect();
+    return Database.datasource;
   }
 
   private connect() {
-    if (this.database) {
-      this.database
+    if (Database.datasource) {
+      Database.datasource
         .initialize()
         .then(() => console.log("Connected!"))
         .catch((error) => console.log("Connection Fail!", error));

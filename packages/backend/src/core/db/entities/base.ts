@@ -1,19 +1,19 @@
-import { Column, Entity, PrimaryColumn } from "typeorm";
+import { Column, Entity, PrimaryGeneratedColumn } from "typeorm";
 
 @Entity()
 export class BaseEntity {
-  @PrimaryColumn()
+  @PrimaryGeneratedColumn("uuid")
   id: string;
 
-  @Column()
+  @Column({ type: "timestamp", nullable: true })
   created_at: string;
 
-  @Column()
+  @Column({ type: "text", nullable: true })
   created_by: string;
 
-  @Column()
+  @Column({ type: "timestamp", nullable: true })
   updated_at: string;
 
-  @Column()
+  @Column({ type: "text", nullable: true })
   updated_by: string;
 }

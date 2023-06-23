@@ -1,3 +1,4 @@
+import "reflect-metadata";
 import { Application } from "./src/core/server";
 import routingControllers from "./src/modules";
 

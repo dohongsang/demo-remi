@@ -1,3 +1,4 @@
-import { UserEntity } from "./user";
-import { YoutubeVideo } from "./youtube-video";
-export default [YoutubeVideo, UserEntity];
+import { UserProfileEntity } from "./user-profile";
+import { UserVideo } from "./user-video";
+import { UserAccountEntity } from "./user-account";
+export default [UserAccountEntity, UserProfileEntity, UserVideo];

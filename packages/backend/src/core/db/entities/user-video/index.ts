@@ -1,8 +1,8 @@
 import { Column, Entity } from "typeorm";
 import { BaseEntity } from "../base";
 
-@Entity()
-export class YoutubeVideo extends BaseEntity {
+@Entity({ name: "user_videos" })
+export class UserVideo extends BaseEntity {
   @Column()
   title: string;
 
