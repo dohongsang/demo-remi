@@ -18,8 +18,6 @@ export class Password {
   }
 
   decryptPassword(cipher: string, hashKey: string): string {
-    console.log({ cipher, hashKey });
-    
     const plainText = CryptoJS.AES.decrypt(cipher, hashKey, {
       keySize: 32,
       mode: CryptoJS.mode.ECB,

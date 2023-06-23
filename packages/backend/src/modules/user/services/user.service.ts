@@ -1,7 +1,7 @@
 import { Inject, Service } from "typedi";
 import { UserDao } from "../../../common/dao/user.dao";
-import { UserModel } from "../../../common/models/user.model";
 import { UserInfoResponse } from "../rest/models/user-info/user-info.res";
+import { UserModel } from "../models/user.model";
 
 @Service()
 export class UserService {

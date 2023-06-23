@@ -1,5 +1,6 @@
-import { UserAccountEntity } from "../../core/db/entities/user-account";
-import { BaseModel } from "./base.model";
+import { BaseModel } from "../../../common/models/base.model";
+import { UserAccountEntity } from "../../../core/db/entities/user-account";
+
 
 export class AccountModel extends BaseModel {
   email: string;

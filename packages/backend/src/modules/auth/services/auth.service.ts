@@ -3,9 +3,9 @@ import { isEqual } from "lodash";
 import { Inject, Service } from "typedi";
 import { AccountDao } from "../../../common/dao/account.dao";
 import { UserDao } from "../../../common/dao/user.dao";
-import { AccountModel } from "../../../common/models/account.model";
-import { UserModel } from "../../../common/models/user.model";
 import { EntityNotFoundException, Password } from "../../../core";
+import { UserModel } from "../../user/models/user.model";
+import { AccountModel } from "../models/account.model";
 import { UserLoginRequest } from "../rest/models/user-login/user-login.req";
 import { UserLoginResponse } from "../rest/models/user-login/user-login.res";
 import { UserRegisterRequest } from "../rest/models/user-register/user-register.req";
@@ -68,7 +68,7 @@ export class AuthService {
     const passwordDecrypted = password.decryptPassword(
       account.hash_password,
       account.hash_key
-    );    
+    );
 
     if (!isEqual(req.password, passwordDecrypted)) {
       throw new EntityNotFoundException();

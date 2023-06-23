@@ -1,5 +1,6 @@
-import { UserProfileEntity } from "../../core/db/entities/user-profile";
-import { BaseModel } from "./base.model";
+import { BaseModel } from "../../../common/models/base.model";
+import { UserProfileEntity } from "../../../core/db/entities/user-profile";
+
 
 export class UserModel extends BaseModel {
   firstName: string;

@@ -11,11 +11,10 @@ import {
 } from "typeorm";
 import { Database } from "..";
 import { BaseModel } from "../../../common/models/base.model";
-import { UserModel } from "../../../common/models/user.model";
 
 export interface IRepo {
-  insertData<T>(data: T, user: UserModel): Promise<ObjectLiteral[]>;
-  updateData<T>(data: T, user: UserModel): Promise<UpdateResult>;
+  insertData<T>(data: T, user: BaseModel): Promise<ObjectLiteral[]>;
+  updateData<T>(data: T, user: BaseModel): Promise<UpdateResult>;
 }
 
 @Service()
