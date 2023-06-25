@@ -1,3 +1,4 @@
-import { UserModel } from "../../../../user/models/user.model";
-
-export interface UserLoginResponse extends UserModel {}
+export interface UserLoginResponse {
+  id: string;
+  accessToken: string;
+}
