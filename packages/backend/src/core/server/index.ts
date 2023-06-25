@@ -1,8 +1,8 @@
 import dotenv from "dotenv";
 import { IncomingMessage, Server, ServerResponse } from "http";
-import * as passportRes from "passport";
 import { Action, createExpressServer } from "routing-controllers";
 import { Database } from "../db";
+import { HttpErrorHandler } from "../middlewares/error.middleware";
 import { Passport } from "../middlewares/passport.middleware";
 import { Runner } from "../websocket";
 
@@ -18,6 +18,8 @@ export class Application {
       routePrefix: process.env.PREFIX_ENDPOINT,
       controllers,
       currentUserChecker: (action: Action) => action.request.user,
+      middlewares: [HttpErrorHandler],
+      defaultErrorHandler: false,
     });
 
     const passport = new Passport();

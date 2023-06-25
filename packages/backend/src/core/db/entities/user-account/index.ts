@@ -1,9 +1,11 @@
-import { Column, Entity, JoinColumn, OneToOne, PrimaryColumn } from "typeorm";
+import { Column, Entity, Index, JoinColumn, OneToOne } from "typeorm";
+import { BaseEntity } from "../base";
 import { UserProfileEntity } from "../user-profile";
 
 @Entity({ name: "user_accounts" })
-export class UserAccountEntity {
-  @PrimaryColumn({ type: "text" })
+export class UserAccountEntity extends BaseEntity {
+  @Column({ type: "text" })
+  @Index()
   email: string;
 
   @Column({ type: "text", nullable: true })
@@ -15,16 +17,4 @@ export class UserAccountEntity {
   @OneToOne(() => UserProfileEntity)
   @JoinColumn()
   profile: UserProfileEntity;
-
-  @Column({ type: "timestamp", nullable: true })
-  created_at: string;
-
-  @Column({ type: "text", nullable: true })
-  created_by: string;
-
-  @Column({ type: "timestamp", nullable: true })
-  updated_at: string;
-
-  @Column({ type: "text", nullable: true })
-  updated_by: string;
 }

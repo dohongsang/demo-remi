@@ -1,9 +1,11 @@
 import jwt from "jsonwebtoken";
 import { isEqual } from "lodash";
+import { ForbiddenError, NotFoundError } from "routing-controllers";
 import { Inject, Service } from "typedi";
+import { EntityManager } from "typeorm";
 import { AccountDao } from "../../../common/dao/account.dao";
 import { UserDao } from "../../../common/dao/user.dao";
-import { EntityNotFoundException, Password } from "../../../core";
+import { Password } from "../../../core";
 import { UserModel } from "../../user/models/user.model";
 import { AccountModel } from "../models/account.model";
 import { UserLoginRequest } from "../rest/models/user-login/user-login.req";
@@ -21,6 +23,14 @@ export class AuthService {
   async userRegister(
     req: UserRegisterRequest
   ): Promise<Partial<UserRegisterResponse>> {
+    const accountExisted = await this.accountDao.findOne({
+      email: req.email,
+    });
+
+    if (accountExisted) {
+      throw new ForbiddenError("Data existed on system.");
+    }
+
     // Hash password
     const accountModel = new AccountModel(req);
     const password = new Password();
@@ -32,36 +42,31 @@ export class AuthService {
 
     // Transaction for registering, creating user info
     let accountCreated: any = null;
-    await this.accountDao.transaction(async () => {
+    await this.accountDao.transaction(async (entityManager: EntityManager) => {
       const userModel = new UserModel(req);
-      const userProfile = await this.userDao.insert(userModel);
+      const userProfile = await this.userDao.insert(userModel, entityManager);
 
       accountModel.profile = userProfile;
-      accountCreated = await this.accountDao.insert(accountModel);
+      await this.accountDao.insert(accountModel, entityManager);
     });
 
-    if (accountCreated) {
-      return {
-        accessToken: jwt.sign(
-          {
-            exp: Math.floor(Date.now() / 1000) + 60 * 60,
-            info: {
-              id: accountCreated.id,
-              email: accountCreated.email,
-            },
+    return {
+      accessToken: jwt.sign(
+        {
+          info: {
+            id: accountCreated?.raw?.id,
+            email: accountCreated?.raw?.email,
           },
-          process.env.SECRET_HASH_KEY || "",
-          { algorithm: "HS512" }
-        ),
-      };
-    } else {
-      throw new Error("Somethings went wrong!");
-    }
+        },
+        process.env.SECRET_HASH_KEY || "",
+        { algorithm: "HS512", expiresIn: "30d" }
+      ),
+    };
   }
 
   async userLogin(req: UserLoginRequest): Promise<Partial<UserLoginResponse>> {
     const account = await this.accountDao.findOne({ email: req.username });
-    if (!account) throw new EntityNotFoundException();
+    if (!account) throw new NotFoundError();
 
     // Decrypt password
     const password = new Password();
@@ -71,7 +76,7 @@ export class AuthService {
     );
 
     if (!isEqual(req.password, passwordDecrypted)) {
-      throw new EntityNotFoundException();
+      throw new ForbiddenError("username, password not match!");
     }
 
     return {

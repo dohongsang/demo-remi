@@ -1,7 +1,8 @@
-import { Column, Entity } from "typeorm";
+import { Column, Entity, Unique } from "typeorm";
 import { BaseEntity } from "../base";
 
 @Entity({ name: "user_videos" })
+@Unique("unique_constraint_title", ["title"])
 export class UserVideoEntity extends BaseEntity {
   @Column({ type: "text", nullable: true })
   title: string;
@@ -10,8 +11,11 @@ export class UserVideoEntity extends BaseEntity {
   description: string;
 
   @Column({ type: "text", nullable: true })
-  number_of_like: string;
+  link: string;
 
-  @Column({ type: "text", nullable: true })
-  number_of_dislike: string;
+  @Column({ type: "int", nullable: true })
+  number_of_like: number;
+
+  @Column({ type: "int", nullable: true })
+  number_of_dislike: number;
 }

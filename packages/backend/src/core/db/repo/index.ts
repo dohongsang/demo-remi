@@ -1,4 +1,5 @@
 import { isEmpty } from "lodash";
+import { ForbiddenError } from "routing-controllers";
 import { Service } from "typedi";
 import {
   EntityManager,
@@ -6,16 +7,10 @@ import {
   FindOneOptions,
   FindOptionsRelations,
   FindOptionsWhere,
-  ObjectLiteral,
   UpdateResult,
 } from "typeorm";
 import { Database } from "..";
 import { BaseModel } from "../../../common/models/base.model";
-
-export interface IRepo {
-  insertData<T>(data: T, user: BaseModel): Promise<ObjectLiteral[]>;
-  updateData<T>(data: T, user: BaseModel): Promise<UpdateResult>;
-}
 
 @Service()
 export class Dao {
@@ -26,18 +21,32 @@ export class Dao {
     this.entity = entity;
   }
 
-  async insert(data: BaseModel): Promise<any> {
-    const repo = Database.datasource.getRepository(this.entity);
-    const row = this.toDao(data);
-    row.created_at = new Date().toISOString();
-    return await repo.save(row);
+  async insert(data: BaseModel, entityManager?: EntityManager): Promise<any> {
+    try {
+      const repo = entityManager
+        ? entityManager.getRepository(this.entity)
+        : Database.datasource.getRepository(this.entity);
+      const row = this.toDao(data);
+      row.created_at = new Date().toISOString();
+      return await repo.save(row);
+    } catch (error: any) {
+      if (error.constraint === "unique_constraint_title") {
+        throw new ForbiddenError("Data existed in system.");
+      }
+    }
   }
 
-  async update(data: BaseModel): Promise<any> {
-    const repo = Database.datasource.getRepository(this.entity);
+  async update(
+    data: BaseModel,
+    where?: FindOptionsWhere<any>,
+    entityManager?: EntityManager
+  ): Promise<UpdateResult> {
+    const repo = entityManager
+      ? entityManager.getRepository(this.entity)
+      : Database.datasource.getRepository(this.entity);
     const row = this.toDao(data);
     row.updated_at = new Date().toISOString();
-    return await repo.update(row.id, row);
+    return await repo.update(where ? where : row.id, row);
   }
 
   async findOne(
@@ -59,8 +68,25 @@ export class Dao {
     return result;
   }
 
-  async transaction(cb: (entityManager: EntityManager) => Promise<unknown>) {
-    return await Database.datasource.manager.transaction(cb.bind(this));
+  async transaction(
+    excute: (entityManager: EntityManager) => Promise<unknown>
+  ) {
+    const queryRunner = Database.datasource.createQueryRunner();
+    const manager = queryRunner.manager;
+
+    if (queryRunner) {
+      await queryRunner.connect();
+      await queryRunner.startTransaction();
+      try {
+        await excute(manager);
+        await queryRunner.commitTransaction();
+      } catch (error: any) {
+        await queryRunner.rollbackTransaction();
+        throw new ForbiddenError("Something went wrong.");
+      } finally {
+        await queryRunner.release();
+      }
+    }
   }
 
   private toDao(data: BaseModel) {

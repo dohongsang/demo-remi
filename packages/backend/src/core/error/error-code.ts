@@ -1,3 +1,0 @@
-export enum ERROR_CODE {
-  ENTITY_NOT_FOUND = "ENTITY_NOT_FOUND",
-}

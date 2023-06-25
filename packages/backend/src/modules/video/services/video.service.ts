@@ -1,12 +1,80 @@
 import { google } from "googleapis";
 import { Inject, Service } from "typedi";
 import { UserVideoDao } from "../../../common/dao/user-video.dao";
+import { UserVideoActionPublisher } from "../../../common/event/publisher/user-video-actions.publisher";
 import { UserVideoModel } from "../models/user-video.model";
 import { CreateVideoRequest } from "../rest/models/create-video/create-video.req";
 
 @Service()
 export class UserVideoService {
-  constructor(@Inject() private readonly userVideoDao: UserVideoDao) {}
+  constructor(
+    @Inject() private readonly userVideoDao: UserVideoDao,
+    @Inject()
+    private readonly userVideoActionSubcriber: UserVideoActionPublisher
+  ) {}
+
+  onSubcriber() {
+    this.userVideoActionSubcriber.onMessageUserDislikeVideo((message) =>
+      this.onMessageUserDislikeVideo(message)
+    );
+    this.userVideoActionSubcriber.onMessageUserLikeVideo((message) =>
+      this.onMessageUserLikeVideo(message)
+    );
+    this.userVideoActionSubcriber.onMessageUserUnDislikeVideo((message) =>
+      this.onMessageUserUnDislikeVideo(message)
+    );
+    this.userVideoActionSubcriber.onMessageUserUnLikeVideo((message) =>
+      this.onMessageUserUnLikeVideo(message)
+    );
+  }
+
+  async onMessageUserLikeVideo({ id }: any) {
+    const daoUserVideo = await this.userVideoDao.findOne({ id });
+    if (daoUserVideo) {
+      return await this.userVideoDao.update(
+        new UserVideoModel({
+          id,
+          numberOfLike: daoUserVideo.number_of_like + 1,
+        })
+      );
+    }
+  }
+
+  async onMessageUserDislikeVideo({ id }: any) {
+    const daoUserVideo = await this.userVideoDao.findOne({ id });
+    if (daoUserVideo) {
+      return await this.userVideoDao.update(
+        new UserVideoModel({
+          id,
+          numberOfDislike: daoUserVideo.number_of_dislike + 1,
+        })
+      );
+    }
+  }
+
+  async onMessageUserUnLikeVideo({ id }: any) {
+    const daoUserVideo = await this.userVideoDao.findOne({ id });
+    if (daoUserVideo) {
+      return await this.userVideoDao.update(
+        new UserVideoModel({
+          id,
+          numberOfLike: daoUserVideo.number_of_like - 1,
+        })
+      );
+    }
+  }
+
+  async onMessageUserUnDislikeVideo({ id }: any) {
+    const daoUserVideo = await this.userVideoDao.findOne({ id });
+    if (daoUserVideo) {
+      return await this.userVideoDao.update(
+        new UserVideoModel({
+          id,
+          numberOfDislike: daoUserVideo.number_of_dislike - 1,
+        })
+      );
+    }
+  }
 
   async shareVideo(body: CreateVideoRequest) {
     const youtubeId = this.getYoutubeId(body.link);
@@ -14,7 +82,7 @@ export class UserVideoService {
     if (youtubeId) {
       const youtube = google.youtube({
         version: "v3",
-        auth: "AIzaSyDVGPPcou6miUOrdLu7ML0VCXzd4KI9pjk",
+        auth: process.env.GOOGLE_API_KEY,
       });
 
       const video = await youtube.videos
@@ -34,6 +102,9 @@ export class UserVideoService {
           new UserVideoModel({
             title: video.title,
             description: video.description,
+            link: body.link,
+            numberOfDislike: 0,
+            numberOfLike: 0,
           })
         );
       }
