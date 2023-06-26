@@ -1,0 +1,15 @@
+.input_container {
+  @apply flex flex-col gap-2;
+}
+.input_container--wrapper {
+  @apply border rounded-md px-4 py-2;
+}
+.input_container--wrapper__input {
+  @apply outline-none w-full;
+}
+.input_container--label {
+  @apply text-base ml-1;
+}
+.input_container--validation_error {
+  @apply text-red-600 italic text-xs;
+}

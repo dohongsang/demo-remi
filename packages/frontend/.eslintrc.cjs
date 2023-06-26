@@ -1,6 +1,10 @@
 module.exports = {
   rules: {
-    'react-refresh/only-export-components': 'warn'
+    'react-refresh/only-export-components': 'warn',
+    'react/prop-types': 'off',
+    '@typescript-eslint/no-empty-interface': 'off',
+    '@typescript-eslint/no-explicit-any': 'off',
+    'react-hooks/exhaustive-deps': 'off',
   },
   reportUnusedDisableDirectives: true,
   ignorePatterns: ['dist/*'],

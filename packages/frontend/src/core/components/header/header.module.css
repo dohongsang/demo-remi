@@ -1,0 +1,9 @@
+.header_container {
+  @apply flex justify-between border-b-2 py-4 px-2;
+}
+.header_container__left {
+  @apply flex gap-4  items-center; 
+}
+.header_container__right {
+  @apply flex gap-4  items-center;
+}

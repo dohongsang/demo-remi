@@ -1,0 +1,30 @@
+.button_container {
+  @apply border rounded-md px-4 py-2;
+}
+
+button,
+[type="submit"] {
+  @apply border rounded-md px-4 py-2 !bg-blue-500 !text-white;
+}
+
+.button_container--primary {
+  @apply !bg-blue-500 !text-white;
+}
+.button_container--secondary {
+  @apply !bg-slate-500 !text-white;
+}
+.button_container--success {
+  @apply !bg-green-500 !text-white;
+}
+.button_container--warning {
+  @apply !bg-orange-500 !text-black;
+}
+.button_container--danger {
+  @apply !bg-red-500 !text-white;
+}
+.button_container--info {
+  @apply !bg-teal-500 !text-black;
+}
+.button_container--disabled {
+  @apply !bg-gray-500 !text-black;
+}
