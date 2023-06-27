@@ -1,6 +1,8 @@
 import { get } from "lodash";
-import { setCookie } from "typescript-cookie";
+import { removeCookie, setCookie } from "typescript-cookie";
 import { Box } from "../../../core";
+import { ApiService } from "../../../core/rest";
+import { ApplicationConfig } from "../../../core/utils/config";
 import { PageContextServer } from "../../../core/utils/types";
 import { UserLoginRequest } from "../infras/models/user-login";
 import { UserLoginService } from "../infras/services/auth.service";
@@ -12,10 +14,11 @@ export interface IUserLoginProps {
 export function Page(props: IUserLoginProps) {
   if (typeof window !== "undefined") {
     if (props?.accessToken) {
+      removeCookie("token");
       setCookie("token", props?.accessToken);
       setTimeout(() => {
         location.href = "/";
-      }, 1000);
+      }, 500);
     }
   }
 
@@ -38,6 +41,10 @@ const generateRequest = (pageContext: PageContextServer): UserLoginRequest => {
 };
 
 export async function onBeforeRender(pageContext: PageContextServer) {
+  ApiService.instance(ApplicationConfig.VITE_REST_API ?? "", {
+    token: pageContext?.token ?? ApplicationConfig.VITE_PUBLIC_TOKEN,
+  });
+
   const loginService = new UserLoginService();
   const requestParams = generateRequest(pageContext);
   const result = await loginService.excute(requestParams);

@@ -12,22 +12,19 @@ const UserLoginForm: React.FC<IUserLoginForm> = () => {
         password: "",
       }}
       validationSchema={Yup.object({
-        username: Yup.string()
-          .email("Please input a right format email")
-          .required("Please input a username"),
-        password: Yup.string()
-          .max(20, "Must be 20 characters or less")
-          .required("Please input a password"),
+        username: Yup.string().email("Please input a right format email"),
+        password: Yup.string().max(20, "Must be 20 characters or less"),
       })}
       onSubmit={(values) => {
-        location.href = `/login?username=${values.username}&password=${values.password}`;
+        if (values?.username && values?.password) {
+          location.href = `/login?username=${values.username}&password=${values.password}`;
+        } else {
+          location.href = `/register`;
+        }
       }}
     >
       {({ values, handleChange, handleBlur, handleSubmit }) => (
-        <Form
-          className="w-[550px] flex items-center justify-end gap-2"
-          onSubmit={handleSubmit}
-        >
+        <Form className="flex items-center gap-2" onSubmit={handleSubmit}>
           <Input
             id="new-username"
             name="username"

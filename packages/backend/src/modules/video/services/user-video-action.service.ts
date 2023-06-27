@@ -43,7 +43,7 @@ export class UserVideoActionService {
 
     if (userActionUpdated.affected === 0) {
       this.userVideoActionPublisher.notifyUserLikeVideo({ id });
-      return await this.userVideoActionDao.insert(
+      await this.userVideoActionDao.insert(
         new UserVideoActionModel({
           id: userVideoActionId,
           isLiked: true,
@@ -51,6 +51,7 @@ export class UserVideoActionService {
           createdBy: userId,
         })
       );
+      return true;
     }
 
     if (!daoUserVideoAction.is_liked) {
@@ -85,7 +86,7 @@ export class UserVideoActionService {
 
     if (userActionUpdated.affected === 0) {
       this.userVideoActionPublisher.notifyUserDislikeVideo({ id });
-      return await this.userVideoActionDao.insert(
+      await this.userVideoActionDao.insert(
         new UserVideoActionModel({
           id: userVideoActionId,
           isLiked: false,
@@ -93,6 +94,7 @@ export class UserVideoActionService {
           createdBy: userId,
         })
       );
+      return true;
     }
 
     if (!daoUserVideoAction.is_disliked) {
@@ -101,6 +103,58 @@ export class UserVideoActionService {
         this.userVideoActionPublisher.notifyUserUnLikeVideo({ id });
       }
     }
+    return true;
+  }
+
+  async unlikeVideoByUser(id: string, userId: string) {
+    const userVideoActionId = `${id}_${userId}`;
+    const [daoUser, daoUserVideo, daoUserVideoAction] = await Promise.all([
+      this.userDao.findOne({ id: userId }),
+      this.userVideoDao.findOne({ id }),
+      this.userVideoActionDao.findOne({ id: userVideoActionId }),
+    ]);
+
+    if (!daoUserVideo || !daoUser || !daoUserVideoAction) {
+      throw new NotFoundError();
+    }
+
+    await this.userVideoActionDao.update(
+      new UserVideoActionModel({
+        isLiked: false,
+        updatedBy: userId,
+      }),
+      {
+        id: userVideoActionId,
+      }
+    );
+
+    this.userVideoActionPublisher.notifyUserUnLikeVideo({ id });
+    return true;
+  }
+
+  async unDislikeVideoByUser(id: string, userId: string) {
+    const userVideoActionId = `${id}_${userId}`;
+    const [daoUser, daoUserVideo, daoUserVideoAction] = await Promise.all([
+      this.userDao.findOne({ id: userId }),
+      this.userVideoDao.findOne({ id }),
+      this.userVideoActionDao.findOne({ id: userVideoActionId }),
+    ]);
+
+    if (!daoUserVideo || !daoUser || !daoUserVideoAction) {
+      throw new NotFoundError();
+    }
+
+    await this.userVideoActionDao.update(
+      new UserVideoActionModel({
+        isDisliked: false,
+        updatedBy: userId,
+      }),
+      {
+        id: userVideoActionId,
+      }
+    );
+
+    this.userVideoActionPublisher.notifyUserUnDislikeVideo({ id });
     return true;
   }
 }

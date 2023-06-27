@@ -4,19 +4,12 @@ import { dangerouslySkipEscape, escapeInject } from "vite-plugin-ssr/server";
 import { InjectFilterEntry } from "vite-plugin-ssr/types";
 import "../public/global.css";
 import { PageShell } from "../src/core/PageShell";
-import { UserCoreService } from "../src/core/infras/services/user-core.service";
-import { ApiService } from "../src/core/rest";
-import { ApplicationConfig } from "../src/core/utils/config";
 import { PageContextServer } from "../src/core/utils/types";
 import logoUrl from "./logo.svg";
 
 export const passToClient = ["pageProps", "routeParams", "token", "user"];
 
 export async function render(pageContext: PageContextServer) {
-  ApiService.instance(ApplicationConfig.VITE_REST_API ?? "", {
-    token: pageContext?.token ?? ApplicationConfig.VITE_PUBLIC_TOKEN,
-  });
-
   const { Page, pageProps } = pageContext;
   const sheet = new ServerStyleSheet();
   const title = `${pageProps && pageProps.title}`;

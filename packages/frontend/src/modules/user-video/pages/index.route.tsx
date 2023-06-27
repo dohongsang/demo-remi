@@ -1,1 +1,1 @@
-export const route = `/`;
+export const route = `/video`;

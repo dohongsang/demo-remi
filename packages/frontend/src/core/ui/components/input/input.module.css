@@ -2,7 +2,7 @@
   @apply flex flex-col gap-2 relative;
 }
 .input_container--wrapper {
-  @apply border rounded-md px-2 py-[0.3rem];
+  @apply border rounded-md px-2 py-[0.45rem];
 }
 .input_container--wrapper__input {
   @apply outline-none w-full;
@@ -11,5 +11,5 @@
   @apply text-base ml-1;
 }
 .input_container--validation_error {
-  @apply text-red-600 italic absolute -bottom-[20px];
+  @apply text-red-600 italic absolute -bottom-[15px];
 }

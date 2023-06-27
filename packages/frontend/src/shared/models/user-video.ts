@@ -1,4 +1,5 @@
 import BaseModel from "../../core/models/base";
+import UserInfo from "../../core/models/user-info";
 
 export default class UserVideo extends BaseModel {
   title!: string;
@@ -6,6 +7,9 @@ export default class UserVideo extends BaseModel {
   link!: string;
   numberOfLike!: string;
   numberOfDislike!: string;
+  user!: UserInfo;
+  isLiked!: boolean;
+  isDisliked!: boolean;
 
   constructor(init: Partial<UserVideo>) {
     super(init);

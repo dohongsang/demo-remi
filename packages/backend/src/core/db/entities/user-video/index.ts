@@ -1,5 +1,6 @@
-import { Column, Entity, Unique } from "typeorm";
+import { Column, Entity, JoinColumn, OneToOne, Unique } from "typeorm";
 import { BaseEntity } from "../base";
+import { UserProfileEntity } from "../user-profile";
 
 @Entity({ name: "user_videos" })
 @Unique("unique_constraint_title", ["title"])
@@ -18,4 +19,8 @@ export class UserVideoEntity extends BaseEntity {
 
   @Column({ type: "int", nullable: true })
   number_of_dislike: number;
+
+  @OneToOne(() => UserProfileEntity)
+  @JoinColumn()
+  user: UserProfileEntity;
 }

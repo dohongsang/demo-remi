@@ -1,7 +1,11 @@
 import { google } from "googleapis";
+import { keyBy } from "lodash";
 import { Inject, Service } from "typedi";
+import { In } from "typeorm";
+import { UserVideoActionDao } from "../../../common/dao/user-video-action.dao";
 import { UserVideoDao } from "../../../common/dao/user-video.dao";
 import { UserVideoActionPublisher } from "../../../common/event/publisher/user-video-actions.publisher";
+import { UserProfileEntity } from "../../../core/db/entities/user-profile";
 import { UserVideoModel } from "../models/user-video.model";
 import { CreateVideoRequest } from "../rest/models/create-video/create-video.req";
 
@@ -9,6 +13,7 @@ import { CreateVideoRequest } from "../rest/models/create-video/create-video.req
 export class UserVideoService {
   constructor(
     @Inject() private readonly userVideoDao: UserVideoDao,
+    @Inject() private readonly userVideoActionDao: UserVideoActionDao,
     @Inject()
     private readonly userVideoActionSubcriber: UserVideoActionPublisher
   ) {}
@@ -76,7 +81,7 @@ export class UserVideoService {
     }
   }
 
-  async shareVideo(body: CreateVideoRequest) {
+  async shareVideo(body: CreateVideoRequest, user: UserProfileEntity) {
     const youtubeId = this.getYoutubeId(body.link);
 
     if (youtubeId) {
@@ -98,15 +103,17 @@ export class UserVideoService {
         });
 
       if (video) {
-        return await this.userVideoDao.insert(
+        const userVideoCreated = await this.userVideoDao.insert(
           new UserVideoModel({
             title: video.title,
             description: video.description,
             link: body.link,
             numberOfDislike: 0,
             numberOfLike: 0,
+            user,
           })
         );
+        return UserVideoModel.mappingToDomain(userVideoCreated);
       }
     }
     return false;
@@ -119,8 +126,20 @@ export class UserVideoService {
     return match && match[7].length == 11 ? match[7] : false;
   }
 
-  async find(): Promise<UserVideoModel[]> {
-    const result = await this.userVideoDao.find();
-    return result.map((item: any) => UserVideoModel.mappingToDomain(item));
+  async find(user: UserProfileEntity): Promise<UserVideoModel[]> {
+    const result = await this.userVideoDao.find(undefined, { user: true });
+    const ids = result.map((item: any) => `${item.id}_${user.id}`);
+    const userVideoActions = await this.userVideoActionDao
+      .find({ id: In(ids) })
+      .then((res) => keyBy(res, "id"));
+
+    return result.map((item: any) => {
+      const action = userVideoActions[`${item.id}_${user.id}`];
+      return UserVideoModel.mappingToDomain(
+        item,
+        action?.is_liked,
+        action?.is_disliked
+      );
+    });
   }
 }

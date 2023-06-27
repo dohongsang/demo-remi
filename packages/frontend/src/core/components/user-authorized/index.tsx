@@ -1,3 +1,4 @@
+import { removeCookie } from "typescript-cookie";
 import { Box, Button } from "../../ui";
 
 interface IUserAuthorizedForm {
@@ -8,8 +9,23 @@ const UserAuthorized: React.FC<IUserAuthorizedForm> = ({ email }) => {
   return (
     <Box className="flex gap-2 items-center">
       <Box as="label">Welcome {email}</Box>
-      <Button type="button" variant="warning">Share a movie</Button>
-      <Button type="button" variant="secondary">Logout</Button>
+      <Button
+        type="button"
+        variant="warning"
+        onClick={() => (location.href = `/video`)}
+      >
+        Share a movie
+      </Button>
+      <Button
+        type="button"
+        variant="secondary"
+        onClick={() => {
+          removeCookie("token");
+          location.href = "/";
+        }}
+      >
+        Logout
+      </Button>
     </Box>
   );
 };

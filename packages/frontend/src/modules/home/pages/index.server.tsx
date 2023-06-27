@@ -1,19 +1,23 @@
 import { UserCoreService } from "../../../core/infras/services/user-core.service";
 import { ApiService } from "../../../core/rest";
+import { ServiceResult } from "../../../core/rest/models/service-result";
 import Box from "../../../core/ui/components/box";
 import { ApplicationConfig } from "../../../core/utils/config";
 import { PageContextServer } from "../../../core/utils/types";
 import UserVideo from "../../../shared/models/user-video";
-import UserVideoForm from "../components/user-video-form";
+import VideoItem from "../components/video-item";
+import VideoListService from "../infras/services/video-list.service";
 
 export interface IUserVideoProps {
-  videos: UserVideo[];
+  data: ServiceResult<UserVideo[]>;
 }
 
-export function Page() {
+export function Page({ data }: IUserVideoProps) {
   return (
-    <Box className="flex justify-center py-10">
-      <UserVideoForm />
+    <Box className="flex flex-col items-center p-10 gap-4">
+      {data.data.map((item) => (
+        <VideoItem key={`VideoItem_${item.id}`} {...item} />
+      ))}
     </Box>
   );
 }
@@ -24,9 +28,15 @@ export async function onBeforeRender(pageContext: PageContextServer) {
   });
 
   const userCoreService = new UserCoreService();
+  const service = new VideoListService();
+  const result = await service.excute();
   return {
     pageContext: {
-      pageProps: {},
+      pageProps: {
+        title: "Remitano Demo Application",
+        description: "Remitano Demo Application",
+        data: result,
+      },
       user: pageContext?.token ? await userCoreService.excute() : null,
     },
   };

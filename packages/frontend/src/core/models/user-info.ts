@@ -1,4 +1,5 @@
 export default class UserInfo {
+  id!: string;
   fisrtName!: string;
   lastName!: string;
   email!: string;

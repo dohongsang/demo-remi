@@ -33,7 +33,7 @@ h3 {
 input,
 button,
 label {
-  @apply text-sm;
+  @apply text-base;
 }
 
 small {

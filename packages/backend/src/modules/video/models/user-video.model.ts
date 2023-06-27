@@ -1,5 +1,7 @@
 import { BaseModel } from "../../../common/models/base.model";
+import { UserProfileEntity } from "../../../core/db/entities/user-profile";
 import { UserVideoEntity } from "../../../core/db/entities/user-video";
+import { UserModel } from "../../user/models/user.model";
 
 export class UserVideoModel extends BaseModel {
   title: string;
@@ -7,6 +9,9 @@ export class UserVideoModel extends BaseModel {
   link: string;
   numberOfLike: number;
   numberOfDislike: number;
+  user: UserProfileEntity;
+  isLiked: boolean;
+  isDisliked: boolean;
 
   constructor(user?: Partial<UserVideoModel>) {
     super(user);
@@ -20,10 +25,15 @@ export class UserVideoModel extends BaseModel {
       link: this.link,
       number_of_like: this.numberOfLike,
       number_of_dislike: this.numberOfDislike,
+      user: this.user,
     };
   }
 
-  static mappingToDomain(entity: UserVideoEntity) {
+  static mappingToDomain(
+    entity: UserVideoEntity,
+    isLiked: boolean = false,
+    isDisliked: boolean = false
+  ) {
     return {
       id: entity.id,
       title: entity.title,
@@ -31,6 +41,9 @@ export class UserVideoModel extends BaseModel {
       link: entity.link,
       numberOfLike: entity.number_of_like,
       numberOfDislike: entity.number_of_dislike,
+      user: UserModel.mappingToDomain(entity.user),
+      isLiked,
+      isDisliked,
     };
   }
 }

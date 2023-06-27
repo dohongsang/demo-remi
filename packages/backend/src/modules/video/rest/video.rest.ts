@@ -28,11 +28,10 @@ export default class UserVideoController {
 
   @Get("videos")
   @UseBefore(passport.authenticate("jwt", { session: false }))
-  async find(
-    @Body() body: CreateVideoRequest,
-    @CurrentUser() user: any
-  ): Promise<Response<UserVideoModel[]>> {
-    return Response.ok<UserVideoModel[]>(await this.userVideoService.find());
+  async find(@CurrentUser() user: any): Promise<Response<UserVideoModel[]>> {
+    return Response.ok<UserVideoModel[]>(
+      await this.userVideoService.find(user.profile)
+    );
   }
 
   @Post("videos")
@@ -41,7 +40,9 @@ export default class UserVideoController {
     @Body() body: CreateVideoRequest,
     @CurrentUser() user: any
   ): Promise<Response<any>> {
-    return Response.ok<any>(await this.userVideoService.shareVideo(body));
+    return Response.ok<any>(
+      await this.userVideoService.shareVideo(body, user.profile)
+    );
   }
 
   @Post("videos/:id/like")
@@ -63,6 +64,31 @@ export default class UserVideoController {
   ): Promise<Response<any>> {
     return Response.ok<any>(
       await this.userVideoActionService.dislikeVideoByUser(id, user.profile.id)
+    );
+  }
+
+  @Post("videos/:id/unlike")
+  @UseBefore(passport.authenticate("jwt", { session: false }))
+  async unlikeVideo(
+    @Param("id") id: string,
+    @CurrentUser() user: any
+  ): Promise<Response<any>> {
+    return Response.ok<any>(
+      await this.userVideoActionService.unlikeVideoByUser(id, user.profile.id)
+    );
+  }
+
+  @Post("videos/:id/undislike")
+  @UseBefore(passport.authenticate("jwt", { session: false }))
+  async unDislikeVideo(
+    @Param("id") id: string,
+    @CurrentUser() user: any
+  ): Promise<Response<any>> {
+    return Response.ok<any>(
+      await this.userVideoActionService.unDislikeVideoByUser(
+        id,
+        user.profile.id
+      )
     );
   }
 }

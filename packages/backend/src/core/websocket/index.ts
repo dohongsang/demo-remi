@@ -10,6 +10,12 @@ export class Runner {
     if (!this.wss) {
       this.wss = new WebSocket.Server({ server });
     }
+
+    //start our server
+    server.listen(process.env.PORT || 8999, () => {
+      console.log(`Server started on port ${process.env.PORT || 8999}`);
+    });
+
     this.listener();
   }
 
