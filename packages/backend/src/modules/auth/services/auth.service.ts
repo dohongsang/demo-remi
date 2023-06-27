@@ -32,13 +32,16 @@ export class AuthService {
     }
 
     // Hash password
-    const accountModel = new AccountModel(req);
-    const password = new Password();
-    const hashKey = password.generateHashKey();
+    const passObject = new Password();
+    const moAccount = new AccountModel(req);
+    const hashKey = passObject.generateHashKey();
 
-    accountModel.hashKey = hashKey;
-    accountModel.hashPassword = password.encryptPassword(req.password, hashKey);
-    accountModel.createdBy = "system-user";
+    moAccount.hashKey = hashKey;
+    moAccount.hashPassword = passObject.encryptPassword(
+      passObject.decryptPasswordFromClient(req.password),
+      hashKey
+    );
+    moAccount.createdBy = "system-user";
 
     // Transaction for registering, creating user info
     let accountCreated: any = null;
@@ -46,8 +49,8 @@ export class AuthService {
       const userModel = new UserModel(req);
       const userProfile = await this.userDao.insert(userModel, entityManager);
 
-      accountModel.profile = userProfile;
-      await this.accountDao.insert(accountModel, entityManager);
+      moAccount.profile = userProfile;
+      await this.accountDao.insert(moAccount, entityManager);
     });
 
     return {
@@ -75,21 +78,25 @@ export class AuthService {
       account.hash_key
     );
 
-    if (!isEqual(req.password, passwordDecrypted)) {
-      throw new ForbiddenError("username, password not match!");
+    if (
+      !isEqual(
+        password.decryptPasswordFromClient(req.password),
+        passwordDecrypted
+      )
+    ) {
+      throw new ForbiddenError("Username / Password not match!");
     }
 
     return {
       accessToken: jwt.sign(
         {
-          exp: Math.floor(Date.now() / 1000) + 60 * 60,
           info: {
             id: account.id,
             email: account.email,
           },
         },
         process.env.SECRET_HASH_KEY || "",
-        { algorithm: "HS512" }
+        { algorithm: "HS512", expiresIn: "30d" }
       ),
     };
   }

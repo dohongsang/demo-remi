@@ -20,8 +20,9 @@ export class UserModel extends BaseModel {
     };
   }
 
-  mappingToDomain(entity: UserProfileEntity) {
+  static mappingToDomain(entity: UserProfileEntity) {
     return {
+      id: entity.id,
       email: entity.email,
       firstName: entity.first_name,
       lastName: entity.last_name,

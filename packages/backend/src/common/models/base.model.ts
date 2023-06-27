@@ -8,7 +8,6 @@ export abstract class BaseModel {
   updatedBy?: string;
 
   abstract mappingToDao(): any;
-  abstract mappingToDomain(entity: any): any;
 
   constructor(init?: Partial<BaseModel>) {
     Object.assign(this, init);

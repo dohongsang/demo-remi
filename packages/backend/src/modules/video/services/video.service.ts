@@ -118,4 +118,9 @@ export class UserVideoService {
     const match = url.match(regExp);
     return match && match[7].length == 11 ? match[7] : false;
   }
+
+  async find(): Promise<UserVideoModel[]> {
+    const result = await this.userVideoDao.find();
+    return result.map((item: any) => UserVideoModel.mappingToDomain(item));
+  }
 }

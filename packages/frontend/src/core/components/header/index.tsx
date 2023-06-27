@@ -1,17 +1,24 @@
 import { BiHome } from "react-icons/bi";
-import Box from "../box/box";
+import UserInfo from "../../models/user-info";
+import Box from "../../ui/components/box";
+import UserAuthorized from "../user-authorized";
+import UserLoginForm from "../user-login-form";
 import css from "./header.module.css";
 
-interface IBHeaderProps {}
+interface IBHeaderProps {
+  user?: UserInfo;
+}
 
-const BHeader: React.FC<IBHeaderProps> = () => {
+const BHeader: React.FC<IBHeaderProps> = ({ user }) => {
   return (
     <Box className={css.header_container}>
       <Box className={css.header_container__left}>
-        <BiHome size={50} />
+        <BiHome size={40} />
         <Box as="h1">Funny Movies</Box>
       </Box>
-      <Box className={css.header_container__right}></Box>
+      <Box className={css.header_container__right}>
+        {user ? <UserAuthorized {...user} /> : <UserLoginForm />}
+      </Box>
     </Box>
   );
 };

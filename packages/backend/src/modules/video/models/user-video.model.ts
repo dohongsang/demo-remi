@@ -23,8 +23,9 @@ export class UserVideoModel extends BaseModel {
     };
   }
 
-  mappingToDomain(entity: UserVideoEntity) {
+  static mappingToDomain(entity: UserVideoEntity) {
     return {
+      id: entity.id,
       title: entity.title,
       description: entity.description,
       link: entity.link,

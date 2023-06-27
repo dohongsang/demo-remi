@@ -8,11 +8,13 @@ html {
 }
 
 body {
+  overflow: auto;
   height: 100%;
 }
 
 body > * {
   font-family: "Montserrat", sans-serif;
+  overflow: auto;
   height: 100%;
 }
 
@@ -26,4 +28,14 @@ h2 {
 
 h3 {
   @apply text-xl;
+}
+
+input,
+button,
+label {
+  @apply text-sm;
+}
+
+small {
+  @apply text-[0.65rem];
 }

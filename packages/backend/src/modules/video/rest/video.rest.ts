@@ -2,6 +2,7 @@ import passport from "passport";
 import {
   Body,
   CurrentUser,
+  Get,
   JsonController,
   Param,
   Post,
@@ -9,11 +10,12 @@ import {
 } from "routing-controllers";
 import Container, { Service } from "typedi";
 import { Response } from "../../../core/models/response.model";
+import { UserVideoModel } from "../models/user-video.model";
 import { UserVideoActionService } from "../services/user-video-action.service";
 import { UserVideoService } from "../services/video.service";
 import { CreateVideoRequest } from "./models/create-video/create-video.req";
 
-@JsonController("/video")
+@JsonController("/")
 @Service()
 export default class UserVideoController {
   constructor(
@@ -24,7 +26,16 @@ export default class UserVideoController {
     this.userVideoActionService = Container.get(UserVideoActionService);
   }
 
-  @Post("")
+  @Get("videos")
+  @UseBefore(passport.authenticate("jwt", { session: false }))
+  async find(
+    @Body() body: CreateVideoRequest,
+    @CurrentUser() user: any
+  ): Promise<Response<UserVideoModel[]>> {
+    return Response.ok<UserVideoModel[]>(await this.userVideoService.find());
+  }
+
+  @Post("videos")
   @UseBefore(passport.authenticate("jwt", { session: false }))
   async create(
     @Body() body: CreateVideoRequest,
@@ -33,7 +44,7 @@ export default class UserVideoController {
     return Response.ok<any>(await this.userVideoService.shareVideo(body));
   }
 
-  @Post("/:id/like")
+  @Post("videos/:id/like")
   @UseBefore(passport.authenticate("jwt", { session: false }))
   async likeVideo(
     @Param("id") id: string,
@@ -44,7 +55,7 @@ export default class UserVideoController {
     );
   }
 
-  @Post("/:id/dislike")
+  @Post("videos/:id/dislike")
   @UseBefore(passport.authenticate("jwt", { session: false }))
   async dislikeVideo(
     @Param("id") id: string,

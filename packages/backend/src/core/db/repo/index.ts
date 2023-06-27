@@ -4,6 +4,7 @@ import { Service } from "typedi";
 import {
   EntityManager,
   EntityTarget,
+  FindManyOptions,
   FindOneOptions,
   FindOptionsRelations,
   FindOptionsWhere,
@@ -65,6 +66,25 @@ export class Dao {
     }
 
     const result = await repo.findOne(conditions);
+    return result;
+  }
+
+  async find(
+    where?: FindOptionsWhere<any>,
+    relations?: FindOptionsRelations<any>
+  ): Promise<any> {
+    const repo = Database.datasource.getRepository(this.entity);
+
+    const conditions: FindManyOptions<any> = {};
+    if (where && !isEmpty(where)) {
+      conditions.where = where;
+    }
+
+    if (relations && !isEmpty(relations)) {
+      conditions.relations = relations;
+    }
+
+    const result = await repo.find(conditions);
     return result;
   }
 

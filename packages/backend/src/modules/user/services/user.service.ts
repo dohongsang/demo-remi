@@ -1,7 +1,7 @@
 import { Inject, Service } from "typedi";
 import { UserDao } from "../../../common/dao/user.dao";
-import { UserInfoResponse } from "../rest/models/user-info/user-info.res";
 import { UserModel } from "../models/user.model";
+import { UserInfoResponse } from "../rest/models/user-info/user-info.res";
 
 @Service()
 export class UserService {
@@ -12,6 +12,7 @@ export class UserService {
   }
 
   async findMe(id: string): Promise<Partial<UserInfoResponse>> {
-    return await this.userDao.findOne({ id });
+    const result = await this.userDao.findOne({ id });
+    return UserModel.mappingToDomain(result);
   }
 }
