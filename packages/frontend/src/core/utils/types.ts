@@ -12,6 +12,7 @@ export type PageContextCustom = {
   urlPathname: string;
   token: string;
   user: UserInfo;
+  sendMessage: any;
 };
 
 export type PageContextServer = PageContextBuiltIn<Page> & PageContextCustom;

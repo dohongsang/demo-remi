@@ -31,7 +31,10 @@ export class Dao {
       row.created_at = new Date().toISOString();
       return await repo.save(row);
     } catch (error: any) {
-      if (error.constraint === "unique_constraint_title") {
+      console.error({ error });
+      if (
+        error.message.match(/duplicate key value violates unique constraint/g)
+      ) {
         throw new ForbiddenError("Data existed in system.");
       }
     }
@@ -101,6 +104,7 @@ export class Dao {
         await excute(manager);
         await queryRunner.commitTransaction();
       } catch (error: any) {
+        console.error({ error });
         await queryRunner.rollbackTransaction();
         throw new ForbiddenError("Something went wrong.");
       } finally {

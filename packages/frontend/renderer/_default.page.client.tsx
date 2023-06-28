@@ -1,7 +1,7 @@
 import { hydrateRoot } from "react-dom/client";
 import { PageShell } from "../src/core/PageShell";
-import { PageContextClient } from "../src/core/utils/types";
 import { ApiService } from "../src/core/rest";
+import { PageContextClient } from "../src/core/utils/types";
 
 export async function render(pageContext: PageContextClient) {
   ApiService.api.setAccessToken(pageContext.token);

@@ -8,7 +8,6 @@ startServer();
 
 async function startServer() {
   const app = express();
-
   app.use(compression());
 
   if (isProduction) {
@@ -31,7 +30,7 @@ async function startServer() {
     const pageContextInit = {
       urlOriginal: req.originalUrl,
       token: cookie?.substring(posToken + 6, cookie.length),
-    };    
+    };
 
     const pageContext = await renderPage(pageContextInit);
     const { httpResponse } = pageContext;

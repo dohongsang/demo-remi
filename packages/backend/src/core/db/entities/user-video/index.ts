@@ -1,4 +1,4 @@
-import { Column, Entity, JoinColumn, OneToOne, Unique } from "typeorm";
+import { Column, Entity, JoinColumn, ManyToOne, OneToMany, OneToOne, Unique } from "typeorm";
 import { BaseEntity } from "../base";
 import { UserProfileEntity } from "../user-profile";
 
@@ -20,7 +20,7 @@ export class UserVideoEntity extends BaseEntity {
   @Column({ type: "int", nullable: true })
   number_of_dislike: number;
 
-  @OneToOne(() => UserProfileEntity)
+  @ManyToOne(() => UserProfileEntity)
   @JoinColumn()
   user: UserProfileEntity;
 }

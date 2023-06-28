@@ -3,9 +3,9 @@ import { Inject, Service } from "typedi";
 import { UserVideoActionDao } from "../../../common/dao/user-video-action.dao";
 import { UserVideoDao } from "../../../common/dao/user-video.dao";
 import { UserDao } from "../../../common/dao/user.dao";
-import { UserVideoActionPublisher } from "../../../common/event/publisher/user-video-actions.publisher";
 import { UserVideoActionModel } from "../models/user-video-action.model";
 import { UserVideoService } from "./video.service";
+import { UserVideoActionPublisher } from "../../../common/event/video-actions.publisher";
 
 @Service()
 export class UserVideoActionService {

@@ -1,7 +1,7 @@
 import CryptoJS from "crypto-js";
-import { UserLoginRequest, UserLoginResponse } from "../models/user-login";
-import { ApplicationConfig } from "../../utils/config";
 import { AuthService } from "../../../shared/services/auth.service";
+import { ApplicationConfig } from "../../utils/config";
+import { UserLoginRequest, UserLoginResponse } from "../models/user-login";
 
 export class UserLoginService {
   private service: AuthService;
@@ -10,7 +10,7 @@ export class UserLoginService {
     this.service = new AuthService();
   }
 
-  async excute(req: UserLoginRequest): Promise<UserLoginResponse> {
+  async excute(req: UserLoginRequest): Promise<any> {
     if (req.password) {
       req.password = this.encryptPassword(
         req.password,
@@ -18,12 +18,9 @@ export class UserLoginService {
       );
     }
 
-    const { data } = await this.service.userLogin<
-      UserLoginRequest,
-      UserLoginResponse
-    >(req);
-
-    return data;
+    return await this.service.userLogin<UserLoginRequest, UserLoginResponse>(
+      req
+    );
   }
 
   encryptPassword(plainText: string, hashKey: string): string {

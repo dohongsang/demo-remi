@@ -8,11 +8,10 @@ export class UserVideoUploadService {
     this.service = new UserVideoService();
   }
 
-  async excute(req: IUserShareVideoRequest): Promise<boolean> {
-    const { data } = await this.service.shareYoutubeVideo<
+  async excute(req: IUserShareVideoRequest): Promise<any> {
+    return await this.service.shareYoutubeVideo<
       IUserShareVideoRequest,
       boolean
     >(req);
-    return data;
   }
 }

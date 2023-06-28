@@ -44,8 +44,11 @@ export class AxiosService extends Axios {
     return Promise.reject(error);
   }
 
-  private static onResponse(response: AxiosResponse): AxiosResponse {
-    return response?.data ? JSON.parse(response.data) : null;
+  private static onResponse(response: AxiosResponse): any {
+    if (response.status === 200) {
+      return response?.data ? JSON.parse(response.data) : null;
+    }
+    return Promise.reject(response.data);
   }
 
   private static onResponseError(error: AxiosError): Promise<AxiosError> {

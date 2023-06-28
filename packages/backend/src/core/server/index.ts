@@ -28,21 +28,17 @@ export class Application {
 
     const passport = new Passport();
     passport.usePassportJWT();
-    // passport.useLocalJWT();
 
-    const server = http.createServer(this.app);
     const websocket = new Runner();
-    websocket.init(server);
+    websocket.init();
 
     const database = new Database();
     database.init();
   }
 
   start() {
-    if (this.app) {
-      this.app.listen(8080, function () {
-        console.log("Listening on http://0.0.0.0:8080");
-      });
-    }
+    this.app.listen(8080, function () {
+      console.log("Listening on http://0.0.0.0:8080");
+    });
   }
 }

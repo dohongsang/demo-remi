@@ -1,37 +1,58 @@
-import { IncomingMessage, Server, ServerResponse } from "http";
+import http from "http";
+import { Service } from "typedi";
+import { v4 as uuidv4 } from "uuid";
 import WebSocket from "ws";
 
+@Service()
 export class Runner {
-  private wss: WebSocket.Server;
+  private wsClients: any = {};
 
   constructor() {}
 
-  init(server: Server<typeof IncomingMessage, typeof ServerResponse>) {
-    if (!this.wss) {
-      this.wss = new WebSocket.Server({ server });
-    }
-
-    //start our server
-    server.listen(process.env.PORT || 8999, () => {
-      console.log(`Server started on port ${process.env.PORT || 8999}`);
+  init() {
+    const server = http.createServer();
+    const wsServer = new WebSocket.Server({ server });
+    wsServer.on("connection", this.onConnection.bind(this));
+    server.listen(process.env.WSS_SERVER_PORT, () => {
+      console.log(`Server started on port ${process.env.WSS_SERVER_PORT}`);
     });
-
-    this.listener();
   }
 
-  private listener() {
-    if (this.wss) {
-      this.wss.on("connection", function (ws) {
-        ws.on("error", console.error);
+  onConnection(ws: WebSocket) {
+    const userId = uuidv4();
+    const bindFunc = (message: WebSocket.RawData) =>
+      this.onMessage(userId, message);
+    ws.on("message", bindFunc.bind(this));
+    ws.on("error", this.onError.bind(this));
+    ws.on("close", this.onClose.bind(this));
+    this.wsClients[userId] = ws;
+    console.log(`New Connection ${userId}`);
+  }
 
-        ws.on("message", function message(data) {
-          console.log("received: %s", data);
-        });
+  onMessage(userId: string, data: WebSocket.RawData) {
+    this.handleMessage(data, userId);
+  }
 
-        ws.on("close", function () {
-          console.log("stopping client interval");
-        });
-      });
+  onError() {
+    console.log(`On Error Connection.`);
+  }
+
+  onClose() {
+    console.log(`On Close Connection.`);
+  }
+
+  broadcastMessage(json: any, clientSentId: string) {
+    const data = JSON.stringify(json);
+    for (let userId in this.wsClients) {
+      let client = this.wsClients[userId];
+      if (client.readyState === WebSocket.OPEN && userId !== clientSentId) {
+        client.send(data);
+      }
     }
+  }
+
+  handleMessage(message: any, userId: string) {
+    const dataFromClient = JSON.parse(message.toString());
+    this.broadcastMessage(dataFromClient, userId);
   }
 }

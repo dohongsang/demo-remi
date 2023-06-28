@@ -4,7 +4,7 @@ import { Inject, Service } from "typedi";
 import { In } from "typeorm";
 import { UserVideoActionDao } from "../../../common/dao/user-video-action.dao";
 import { UserVideoDao } from "../../../common/dao/user-video.dao";
-import { UserVideoActionPublisher } from "../../../common/event/publisher/user-video-actions.publisher";
+import { UserVideoActionPublisher } from "../../../common/event/video-actions.publisher";
 import { UserProfileEntity } from "../../../core/db/entities/user-profile";
 import { UserVideoModel } from "../models/user-video.model";
 import { CreateVideoRequest } from "../rest/models/create-video/create-video.req";
