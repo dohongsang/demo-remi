@@ -1,7 +1,7 @@
 import CryptoJS from "crypto-js";
-import { ApplicationConfig } from "../../../../core/utils/config";
-import { AuthService } from "../../../../shared/services/auth.service";
 import { UserLoginRequest, UserLoginResponse } from "../models/user-login";
+import { ApplicationConfig } from "../../utils/config";
+import { AuthService } from "../../../shared/services/auth.service";
 
 export class UserLoginService {
   private service: AuthService;

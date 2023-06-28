@@ -4,7 +4,7 @@ import {
   FaRegThumbsUp,
   FaThumbsDown,
   FaThumbsUp,
-} from "react-icons/fa";
+} from "react-icons/fa/index";
 import Box from "../../../../core/ui/components/box";
 import { usePageContext } from "../../../../core/utils/usePageContext";
 import UserVideo from "../../../../shared/models/user-video";

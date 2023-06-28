@@ -19,8 +19,6 @@ export class AuthService {
   }
 
   async findMe<REQ = any, RES = any>(): Promise<ServiceResult<RES>> {
-    console.log({ asd: (ApiService.api as any).axiosInstance });
-    
     return await ApiService.api.get<REQ, RES>({
       url: `/me`,
     });

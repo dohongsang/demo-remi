@@ -1,6 +1,8 @@
 import { Form, Formik } from "formik";
+import Cookies from "js-cookie";
 import * as Yup from "yup";
 import { Button, Input } from "../..";
+import { UserLoginService } from "../../infras/services/user-login.service";
 
 interface IUserLoginForm {}
 
@@ -17,7 +19,11 @@ const UserLoginForm: React.FC<IUserLoginForm> = () => {
       })}
       onSubmit={(values) => {
         if (values?.username && values?.password) {
-          location.href = `/login?username=${values.username}&password=${values.password}`;
+          const service = new UserLoginService();
+          service.excute(values).then((res) => {
+            Cookies.set("token", res?.accessToken);
+            location.href = `/`;
+          });
         } else {
           location.href = `/register`;
         }

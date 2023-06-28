@@ -2,7 +2,6 @@ import { UserCoreService } from "../../../core/infras/services/user-core.service
 import { ApiService } from "../../../core/rest";
 import { ServiceResult } from "../../../core/rest/models/service-result";
 import Box from "../../../core/ui/components/box";
-import { ApplicationConfig } from "../../../core/utils/config";
 import { PageContextServer } from "../../../core/utils/types";
 import UserVideo from "../../../shared/models/user-video";
 import VideoItem from "../components/video-item";
@@ -23,10 +22,7 @@ export function Page({ data }: IUserVideoProps) {
 }
 
 export async function onBeforeRender(pageContext: PageContextServer) {
-  ApiService.instance(ApplicationConfig.VITE_REST_API ?? "", {
-    token: pageContext?.token ?? ApplicationConfig.VITE_PUBLIC_TOKEN,
-  });
-
+  ApiService.api.setAccessToken(pageContext.token);
   const userCoreService = new UserCoreService();
   const service = new VideoListService();
   const result = await service.excute();

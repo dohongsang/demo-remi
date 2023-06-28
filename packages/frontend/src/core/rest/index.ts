@@ -1,4 +1,5 @@
 import { Axios, AxiosRequestConfig, Method } from "axios";
+import { ApplicationConfig } from "../utils/config";
 import { AxiosService } from "./axios";
 import { ServiceResult } from "./models/service-result";
 
@@ -23,6 +24,7 @@ export class ApiService implements IApiService {
   protected host: string;
   protected axiosInstance: Axios;
 
+  accessToken!: string;
   static api: ApiService;
 
   constructor(host: string, ctx: IApiContext = {}) {
@@ -30,9 +32,8 @@ export class ApiService implements IApiService {
     this.axiosInstance = AxiosService.instance(this.host, ctx);
   }
 
-  static instance(host: string, ctx: IApiContext = {}) {
-    if (this.api) return this.api;
-    this.api = new ApiService(host, ctx);
+  setAccessToken(token: string) {
+    this.accessToken = token;
   }
 
   async fetch<REQ, RES>(
@@ -40,24 +41,30 @@ export class ApiService implements IApiService {
     props: RequestParams<REQ>
   ): Promise<ServiceResult<RES>> {
     let fetch: any = null;
-    const { url, params, ctx = {} } = props;
-
-    if (props.ctx?.token) {
-      ctx["headers"] = {
-        ...ctx["headers"],
-        Authorization: `Bearer ${ctx.token}`,
-      };
-    }
-
+    const { url, params } = props;
     switch (method) {
       case "GET":
         fetch = this.axiosInstance.get(
           AxiosService.generateRequest(url, params),
-          ctx
+          {
+            headers: {
+              "Content-Type": "application/json",
+              Authorization: `Bearer ${
+                this.accessToken ?? ApplicationConfig.VITE_PUBLIC_TOKEN
+              }`,
+            },
+          }
         );
         break;
       case "POST":
-        fetch = this.axiosInstance.post(url, JSON.stringify(props.params), ctx);
+        fetch = this.axiosInstance.post(url, JSON.stringify(props.params), {
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${
+              this.accessToken ?? ApplicationConfig.VITE_PUBLIC_TOKEN
+            }`,
+          },
+        });
         break;
       default:
         break;
@@ -73,3 +80,5 @@ export class ApiService implements IApiService {
     return await this.fetch("POST", props);
   }
 }
+
+ApiService.api = new ApiService(ApplicationConfig.VITE_REST_API ?? "");

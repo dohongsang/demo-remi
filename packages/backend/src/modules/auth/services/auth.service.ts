@@ -44,7 +44,6 @@ export class AuthService {
     moAccount.createdBy = "system-user";
 
     // Transaction for registering, creating user info
-    let accountCreated: any = null;
     await this.accountDao.transaction(async (entityManager: EntityManager) => {
       const userModel = new UserModel(req);
       const userProfile = await this.userDao.insert(userModel, entityManager);
@@ -53,12 +52,17 @@ export class AuthService {
       await this.accountDao.insert(moAccount, entityManager);
     });
 
+    const accountCreated = await this.accountDao.findOne({
+      email: req.email,
+    });
+    if (!accountCreated) throw new NotFoundError();
+
     return {
       accessToken: jwt.sign(
         {
           info: {
-            id: accountCreated?.raw?.id,
-            email: accountCreated?.raw?.email,
+            id: accountCreated?.id,
+            email: accountCreated?.email,
           },
         },
         process.env.SECRET_HASH_KEY || "",

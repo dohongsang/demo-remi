@@ -1,4 +1,4 @@
-import { removeCookie } from "typescript-cookie";
+import Cookies from "js-cookie";
 import { Box, Button } from "../../ui";
 
 interface IUserAuthorizedForm {
@@ -20,7 +20,7 @@ const UserAuthorized: React.FC<IUserAuthorizedForm> = ({ email }) => {
         type="button"
         variant="secondary"
         onClick={() => {
-          removeCookie("token");
+          Cookies.remove("token");
           location.href = "/";
         }}
       >

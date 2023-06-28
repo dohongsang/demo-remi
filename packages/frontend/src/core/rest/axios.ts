@@ -16,10 +16,6 @@ export class AxiosService extends Axios {
   constructor(baseURL: string, config: IApiContext = {}) {
     const axiosConfig = {
       baseURL,
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${config.token}`,
-      },
       timeout: 30000,
       ...config,
     };
@@ -29,7 +25,6 @@ export class AxiosService extends Axios {
 
   static instance(baseURL: string, config: IApiContext = {}): Axios {
     if (this.axiosInstance) return this.axiosInstance;
-
     const axiosInstance = new AxiosService(baseURL, config);
     axiosInstance.interceptors.request.use(this.onRequest, this.onRequestError);
     axiosInstance.interceptors.response.use(

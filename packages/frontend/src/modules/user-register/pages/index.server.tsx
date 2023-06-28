@@ -1,6 +1,5 @@
 import { ApiService } from "../../../core/rest";
 import Box from "../../../core/ui/components/box";
-import { ApplicationConfig } from "../../../core/utils/config";
 import { PageContextServer } from "../../../core/utils/types";
 import UserRegisterForm from "../components/user-video-form";
 
@@ -17,13 +16,14 @@ export function Page() {
 }
 
 export async function onBeforeRender(pageContext: PageContextServer) {
-  ApiService.instance(ApplicationConfig.VITE_REST_API ?? "", {
-    token: pageContext?.token ?? ApplicationConfig.VITE_PUBLIC_TOKEN,
-  });
-
+  ApiService.api.setAccessToken(pageContext.token);
   return {
     pageContext: {
-      pageProps: {},
+      pageProps: {
+        title: "Register a new account",
+        description: "Register a new account",
+        isRegister: true,
+      },
     },
   };
 }

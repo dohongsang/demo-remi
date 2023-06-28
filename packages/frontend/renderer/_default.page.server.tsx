@@ -3,9 +3,9 @@ import { ServerStyleSheet } from "styled-components";
 import { dangerouslySkipEscape, escapeInject } from "vite-plugin-ssr/server";
 import { InjectFilterEntry } from "vite-plugin-ssr/types";
 import "../public/global.css";
+import favicon from "../public/images/favicon.png";
 import { PageShell } from "../src/core/PageShell";
 import { PageContextServer } from "../src/core/utils/types";
-import logoUrl from "./logo.svg";
 
 export const passToClient = ["pageProps", "routeParams", "token", "user"];
 
@@ -18,7 +18,7 @@ export async function render(pageContext: PageContextServer) {
     <html lang="en">
       <head>
         <meta charset="UTF-8" />
-        <link rel="icon" href="${logoUrl}" />
+        <link rel="icon" href="${favicon}" />
         <link rel="preconnect" href="https://fonts.googleapis.com">
         <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
         <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&display=swap" rel="stylesheet">

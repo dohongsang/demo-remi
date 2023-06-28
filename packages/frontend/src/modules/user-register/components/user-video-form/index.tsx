@@ -1,5 +1,5 @@
 import { Form, Formik } from "formik";
-import { removeCookie, setCookie } from "typescript-cookie";
+import Cookies from "js-cookie";
 import * as Yup from "yup";
 import { Button, Input } from "../../../../core";
 import Box from "../../../../core/ui/components/box";
@@ -27,8 +27,8 @@ const UserRegisterForm: React.FC<IUserVideoForm> = () => {
       onSubmit={(values) => {
         const userRegisterService = new UserRegisterService();
         userRegisterService.excute(values).then((res) => {
-          removeCookie("token");
-          setCookie("token", res?.accessToken);
+          Cookies.remove("token");
+          Cookies.set("token", res?.accessToken);
           location.href = "/";
         });
       }}
@@ -84,6 +84,13 @@ const UserRegisterForm: React.FC<IUserVideoForm> = () => {
             />
             <Button type="submit" variant="primary">
               Register
+            </Button>
+            <Button
+              type="button"
+              variant="secondary"
+              onClick={() => (location.href = "/")}
+            >
+              Back
             </Button>
           </Box>
         </Form>

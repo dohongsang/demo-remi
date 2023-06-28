@@ -1,5 +1,4 @@
 import { Form, Formik } from "formik";
-import { useState } from "react";
 import * as Yup from "yup";
 import { Button, Input } from "../../../../core";
 import Box from "../../../../core/ui/components/box";
@@ -8,7 +7,6 @@ import { UserVideoUploadService } from "../../infras/services/user-video.service
 interface IUserVideoForm {}
 
 const UserVideoForm: React.FC<IUserVideoForm> = () => {
-  const [loading, setLoading] = useState<boolean>();
   return (
     <Formik
       initialValues={{
@@ -19,14 +17,9 @@ const UserVideoForm: React.FC<IUserVideoForm> = () => {
       })}
       onSubmit={(values) => {
         const videoService = new UserVideoUploadService();
-        videoService
-          .excute({ link: values.youtubeurl })
-          .then(() => {
-            location.href = "/";
-          })
-          .finally(() => {
-            setLoading(false);
-          });
+        videoService.excute({ link: values.youtubeurl }).then(() => {
+          location.href = "/";
+        });
       }}
     >
       {({ values, handleChange, handleBlur, handleSubmit }) => (

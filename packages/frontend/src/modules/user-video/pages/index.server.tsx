@@ -1,7 +1,6 @@
 import { UserCoreService } from "../../../core/infras/services/user-core.service";
 import { ApiService } from "../../../core/rest";
 import Box from "../../../core/ui/components/box";
-import { ApplicationConfig } from "../../../core/utils/config";
 import { PageContextServer } from "../../../core/utils/types";
 import UserVideo from "../../../shared/models/user-video";
 import UserVideoForm from "../components/user-video-form";
@@ -19,14 +18,14 @@ export function Page() {
 }
 
 export async function onBeforeRender(pageContext: PageContextServer) {
-  ApiService.instance(ApplicationConfig.VITE_REST_API ?? "", {
-    token: pageContext?.token ?? ApplicationConfig.VITE_PUBLIC_TOKEN,
-  });
-
+  ApiService.api.setAccessToken(pageContext.token);
   const userCoreService = new UserCoreService();
   return {
     pageContext: {
-      pageProps: {},
+      pageProps: {
+        title: "Share a Youtube video",
+        description: "Share a Youtube video",
+      },
       user: pageContext?.token ? await userCoreService.excute() : null,
     },
   };
