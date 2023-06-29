@@ -16,5 +16,6 @@
     "compilerOptions": {
       "moduleResolution": "Node16"
     }
-  }
+  },
+  "include": ["server"]
 }

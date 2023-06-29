@@ -1,7 +1,6 @@
 import cors from "cors";
 import dotenv from "dotenv";
 import express from "express";
-import http from "http";
 import { Action, useExpressServer } from "routing-controllers";
 import { Database } from "../db";
 import { HttpErrorHandler } from "../middlewares/error.middleware";
@@ -37,8 +36,9 @@ export class Application {
   }
 
   start() {
-    this.app.listen(8080, function () {
-      console.log("Listening on http://0.0.0.0:8080");
+    const port = process.env.SERVER_PORT;
+    this.app.listen(port, function () {
+      console.log(`Server started at http://0.0.0.0:${port}`);
     });
   }
 }

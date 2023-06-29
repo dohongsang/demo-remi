@@ -13,8 +13,10 @@ export class Runner {
     const server = http.createServer();
     const wsServer = new WebSocket.Server({ server });
     wsServer.on("connection", this.onConnection.bind(this));
-    server.listen(process.env.WSS_SERVER_PORT, () => {
-      console.log(`Server started on port ${process.env.WSS_SERVER_PORT}`);
+
+    const port = process.env.WSS_SERVER_PORT;
+    server.listen(port, () => {
+      console.log(`Websocket started at ws://0.0.0.0:${port}`);
     });
   }
 

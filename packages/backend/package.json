@@ -5,7 +5,7 @@
   "license": "MIT",
   "scripts": {
     "dev": "nodemon index.ts",
-    "start": "tsc && ts-node index.ts"
+    "start": "tsc && ts-node dist/index.js"
   },
   "dependencies": {
     "body-parser": "^1.20.2",

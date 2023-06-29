@@ -1,0 +1,62 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: frontend-secret
+  labels:
+    app: frontend-demo-remi
+data:
+  VITE_REST_API: http://157.230.192.94:31110/api
+  VITE_PUBLIC_TOKEN: eyJhbGciOiJIUzUxMiIsInR5cCI6IkpXVCJ9.eyJpbmZvIjp7fSwiaWF0IjoxNjg3ODMwMTkwLCJleHAiOjE2OTA0MjIxOTB9.b5tgw_vZU_FuNj2IzhDvxn5nUGCUSwaR7mv4KeBU56DMMWpjRVLGRjdPs4CDXyUfBoYwRO7KK7t38ZH_ZUeSkA
+  VITE_SECRET_HASH_KEY: ZGVtby1yZW1pLXNvdXJjZS1jb2Rl
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: demo-remi-frontend
+  labels:
+    app.kubernetes.io/name: demo-remi-frontend
+spec:
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: demo-remi-frontend
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: demo-remi-frontend
+    spec:
+      terminationGracePeriodSeconds: 0
+      containers:
+        - name: demo-remi-frontend
+          image: registry.digitalocean.com/demo-remi/frontend:v1.0.0
+          imagePullPolicy: Always
+          ports:
+            - name: app-port
+              containerPort: 3000
+          envFrom:
+            - configMapRef:
+                name: frontend-secret
+          resources:
+            requests:
+              cpu: "0.125"
+              memory: 50Mi
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: demo-remi-frontend
+  labels:
+    app.kubernetes.io/name: demo-remi-frontend
+spec:
+  type: ClusterIP
+  selector:
+    app.kubernetes.io/name: demo-remi-frontend
+  ports:
+    - name: http
+      port: 80
+      protocol: TCP
+      targetPort: 3000
+    - name: https
+      port: 443
+      protocol: TCP
+      targetPort: 3000
