@@ -6,12 +6,6 @@ metadata:
     kubernetes.io/ingress.class: "nginx"
 spec:
   ingressClassName: nginx
-  defaultBackend:
-    service:
-      name: error
-      port:
-        name: svc-port
-  tls:
   rules:
     - host: api.badmem.com
       http:
@@ -32,12 +26,6 @@ metadata:
     kubernetes.io/ingress.class: "nginx"
 spec:
   ingressClassName: nginx
-  defaultBackend:
-    service:
-      name: error
-      port:
-        name: svc-port
-  tls:
   rules:
     - host: badmem.com
       http:

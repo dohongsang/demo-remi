@@ -5,7 +5,7 @@ metadata:
   labels:
     app: frontend-demo-remi
 data:
-  VITE_REST_API: http://157.230.192.94:31110/api
+  VITE_REST_API: https://api.badmem.com/api
   VITE_PUBLIC_TOKEN: eyJhbGciOiJIUzUxMiIsInR5cCI6IkpXVCJ9.eyJpbmZvIjp7fSwiaWF0IjoxNjg3ODMwMTkwLCJleHAiOjE2OTA0MjIxOTB9.b5tgw_vZU_FuNj2IzhDvxn5nUGCUSwaR7mv4KeBU56DMMWpjRVLGRjdPs4CDXyUfBoYwRO7KK7t38ZH_ZUeSkA
   VITE_SECRET_HASH_KEY: ZGVtby1yZW1pLXNvdXJjZS1jb2Rl
 ---
@@ -32,7 +32,7 @@ spec:
           imagePullPolicy: Always
           ports:
             - name: app-port
-              containerPort: 8080
+              containerPort: 3000
           envFrom:
             - configMapRef:
                 name: frontend-secret
@@ -55,8 +55,8 @@ spec:
     - name: http
       port: 80
       protocol: TCP
-      targetPort: 8080
+      targetPort: 3000
     - name: https
       port: 443
       protocol: TCP
-      targetPort: 8080
+      targetPort: 3000
