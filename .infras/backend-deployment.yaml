@@ -39,7 +39,7 @@ spec:
           imagePullPolicy: Always
           ports:
             - name: app-port
-              containerPort: 9080
+              containerPort: 8080
           envFrom:
             - configMapRef:
                 name: backend-secret
@@ -62,8 +62,8 @@ spec:
     - name: http
       port: 80
       protocol: TCP
-      targetPort: 9080
+      targetPort: 8080
     - name: https
       port: 443
       protocol: TCP
-      targetPort: 9080
+      targetPort: 8080

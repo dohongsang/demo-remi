@@ -32,7 +32,7 @@ spec:
           imagePullPolicy: Always
           ports:
             - name: app-port
-              containerPort: 3000
+              containerPort: 8080
           envFrom:
             - configMapRef:
                 name: frontend-secret
@@ -55,8 +55,8 @@ spec:
     - name: http
       port: 80
       protocol: TCP
-      targetPort: 3000
+      targetPort: 8080
     - name: https
       port: 443
       protocol: TCP
-      targetPort: 3000
+      targetPort: 8080
