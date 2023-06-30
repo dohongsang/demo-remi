@@ -91,11 +91,15 @@ const VideoItem: React.FC<UserVideo> = ({
   }, [id, isLiked, isDisliked]);
 
   return (
-    <Box className="flex gap-2 items-stretch">
+    <Box className="flex sm:flex-col md:flex-col gap-2 items-stretch w-full justify-center">
       <Box className="mt-1 flex items-center bg-gray-300 rounded-md">
-        <iframe height={200} width={400} src={youtubeLink} frameBorder="0" />
+        <iframe
+          src={youtubeLink}
+          frameBorder="0"
+          className="w-full min-h-[200px]"
+        />
       </Box>
-      <Box className="flex flex-col gap-2 w-[400px]">
+      <Box className="flex flex-col gap-2 w-[400px] sm:w-full md:w-full">
         <Box className="flex gap-4 items-center">
           <Box as="label" className="font-semibold line-clamp-2">
             {title}

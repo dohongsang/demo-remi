@@ -7,25 +7,27 @@ interface IUserAuthorizedForm {
 
 const UserAuthorized: React.FC<IUserAuthorizedForm> = ({ email }) => {
   return (
-    <Box className="flex gap-2 items-center">
+    <Box className="flex md:flex-col sm:flex-col gap-2 items-center">
       <Box as="label">Welcome {email}</Box>
-      <Button
-        type="button"
-        variant="warning"
-        onClick={() => (location.href = `/video`)}
-      >
-        Share a movie
-      </Button>
-      <Button
-        type="button"
-        variant="secondary"
-        onClick={() => {
-          Cookies.remove("token");
-          location.href = "/";
-        }}
-      >
-        Logout
-      </Button>
+      <Box className="flex">
+        <Button
+          type="button"
+          variant="warning"
+          onClick={() => (location.href = `/video`)}
+        >
+          Share a movie
+        </Button>
+        <Button
+          type="button"
+          variant="secondary"
+          onClick={() => {
+            Cookies.remove("token");
+            location.href = "/";
+          }}
+        >
+          Logout
+        </Button>
+      </Box>
     </Box>
   );
 };

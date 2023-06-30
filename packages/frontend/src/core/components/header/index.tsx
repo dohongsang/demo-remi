@@ -14,7 +14,10 @@ const BHeader: React.FC<IBHeaderProps> = ({ user }) => {
   const { pageProps } = usePageContext();
   return (
     <Box className={css.header_container}>
-      <Box className={css.header_container__left}>
+      <Box
+        className={`${css.header_container__left} cursor-pointer`}
+        onClick={() => (location.href = "/")}
+      >
         <BiHome size={40} />
         <Box as="h1">Funny Movies</Box>
       </Box>

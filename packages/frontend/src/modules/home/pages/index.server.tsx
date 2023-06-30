@@ -13,7 +13,7 @@ export interface IUserVideoProps {
 
 export function Page({ data }: IUserVideoProps) {
   return (
-    <Box className="flex flex-col items-center p-10 gap-4">
+    <Box className="flex flex-col items-center p-10 sm:p-2 md:p-2 gap-4">
       {data.data.map((item) => (
         <VideoItem key={`VideoItem_${item.id}`} {...item} />
       ))}

@@ -40,7 +40,7 @@ const UserVideoForm: React.FC<IUserVideoForm> = () => {
       >
         {({ values, handleChange, handleBlur, handleSubmit }) => (
           <Form
-            className="w-[500px] border border-gray-300 relative px-5 py-10 flex flex-col gap-2"
+            className="w-[500px] sm:w-full md:w-full border border-gray-300 relative px-5 py-10 flex flex-col gap-2"
             onSubmit={handleSubmit}
           >
             <Box as="label" className="absolute -top-[12px] bg-white">
