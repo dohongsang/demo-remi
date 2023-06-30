@@ -6,6 +6,7 @@ metadata:
     app: frontend-demo-remi
 data:
   VITE_REST_API: https://api.badmem.com/api
+  VITE_WSS: wss://wss.badmem.com
   VITE_PUBLIC_TOKEN: eyJhbGciOiJIUzUxMiIsInR5cCI6IkpXVCJ9.eyJpbmZvIjp7ImlkIjoiYThjYzBhODYtZDVmZC00M2YxLTk5NjgtYmFjYWQ2ZGI4ZWVjIiwiZW1haWwiOiJzeXN0ZW0tYWRtaW5AZ21haWwuY29tIn0sImlhdCI6MTY4ODA4NDcxOCwiZXhwIjoxNjkwNjc2NzE4fQ.OdHR0VyDXUoRUQxCT1slbT8j6tKiohFN9RkvtHr1sqAlcIdvc6g6eocQWRHHXl9fzYEPEzKFl1DKhnqGQtd67Q
   VITE_SECRET_HASH_KEY: ZGVtby1yZW1pLXNvdXJjZS1jb2Rl
 ---
@@ -19,7 +20,7 @@ spec:
   selector:
     matchLabels:
       app.kubernetes.io/name: demo-remi-frontend
-  replicas: 3
+  replicas: 1
   template:
     metadata:
       labels:
@@ -28,7 +29,7 @@ spec:
       terminationGracePeriodSeconds: 0
       containers:
         - name: demo-remi-frontend
-          image: registry.digitalocean.com/demo-remi/frontend:v1.0.3
+          image: registry.digitalocean.com/demo-remi/frontend:v1.0.4
           imagePullPolicy: Always
           ports:
             - name: app-port

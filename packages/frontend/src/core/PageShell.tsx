@@ -5,6 +5,7 @@ import "./PageShell.css";
 import { BHeader } from "./components";
 import { Alert } from "./ui";
 import SLayout from "./ui/components/layout";
+import { ApplicationConfig } from "./utils/config";
 import type { PageContext } from "./utils/types";
 import { PageContextProvider } from "./utils/usePageContext";
 
@@ -16,7 +17,7 @@ export function PageShell({
   pageContext: PageContext;
 }) {
   const { sendMessage } = useWebSocket(
-    "wss://api.badmem.com",
+    ApplicationConfig.VITE_WSS,
     {
       onOpen: () => {
         console.info("WebSocket connection established.");
