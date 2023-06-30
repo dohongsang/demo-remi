@@ -26,7 +26,7 @@ spec:
   selector:
     matchLabels:
       app.kubernetes.io/name: demo-remi-backend
-  replicas: 1
+  replicas: 3
   template:
     metadata:
       labels:
@@ -35,11 +35,13 @@ spec:
       terminationGracePeriodSeconds: 0
       containers:
         - name: demo-remi-backend
-          image: registry.digitalocean.com/demo-remi/backend:v1.0.0
+          image: registry.digitalocean.com/demo-remi/backend:v1.0.3
           imagePullPolicy: Always
           ports:
             - name: app-port
               containerPort: 9080
+            - name: app-port-ws
+              containerPort: 9081
           envFrom:
             - configMapRef:
                 name: backend-secret
@@ -67,3 +69,23 @@ spec:
       port: 443
       protocol: TCP
       targetPort: 9080
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: demo-remi-backend
+  labels:
+    app.kubernetes.io/name: demo-remi-backend
+spec:
+  type: ClusterIP
+  selector:
+    app.kubernetes.io/name: demo-remi-backend
+  ports:
+    - name: http
+      port: 80
+      protocol: TCP
+      targetPort: 9081
+    - name: https
+      port: 443
+      protocol: TCP
+      targetPort: 9081

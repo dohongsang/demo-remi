@@ -16,7 +16,7 @@ export function PageShell({
   pageContext: PageContext;
 }) {
   const { sendMessage } = useWebSocket(
-    "ws://127.0.0.1:8000",
+    "wss://api.badmem.com",
     {
       onOpen: () => {
         console.info("WebSocket connection established.");
@@ -33,7 +33,7 @@ export function PageShell({
     <React.StrictMode>
       <PageContextProvider pageContext={{ ...pageContext, sendMessage }}>
         <SLayout>
-          <BHeader user={pageContext.user} sendMessage={sendMessage}></BHeader>
+          <BHeader user={pageContext.user} />
           {children}
         </SLayout>
         <Toaster position="top-right" reverseOrder={false} />

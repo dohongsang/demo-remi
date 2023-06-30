@@ -19,7 +19,7 @@ spec:
   selector:
     matchLabels:
       app.kubernetes.io/name: demo-remi-frontend
-  replicas: 1
+  replicas: 3
   template:
     metadata:
       labels:
@@ -28,7 +28,7 @@ spec:
       terminationGracePeriodSeconds: 0
       containers:
         - name: demo-remi-frontend
-          image: registry.digitalocean.com/demo-remi/frontend:v1.0.0
+          image: registry.digitalocean.com/demo-remi/frontend:v1.0.3
           imagePullPolicy: Always
           ports:
             - name: app-port
