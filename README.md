@@ -35,7 +35,7 @@ yarn dev
 yarn prod
 ```
 # Authentication with Register
-![alt text](https://github.com/dohongsang/demo-remi/blob/main/register-flow-diagram.png?raw=true)
+![alt text](https://github.com/dohongsang/demo-remi/blob/main/doc/register-flow-diagram.png?raw=true)
 
 Frontend will provide UI/UX so that user can input information like <First Name> <Last Name> <Email> <Password>. Here the password is encrypted with Cryptojs with the Hash Key stored in the env in the pods in the container. And the Hash Key in FE and BE is the same, because BE needs to decrypt the password sent from Frontend.
 
@@ -43,7 +43,7 @@ After decrypting the password from the frontend, the backend will encrypt the de
 
 The server will use encrypted password information and hash key to store data in the user account
 # Authentication with Login
-![alt text](https://github.com/dohongsang/demo-remi/blob/main/login-flow-diagram.png?raw=true)
+![alt text](https://github.com/dohongsang/demo-remi/blob/main/doc/login-flow-diagram.png?raw=true)
 
 Frontend will provide UI/UX so that user can input information like <Email> <Password>. Here the password is encrypted with Cryptojs with the Hash Key stored in the env in the pods in the container.
 
