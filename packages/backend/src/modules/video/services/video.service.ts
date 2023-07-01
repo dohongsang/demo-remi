@@ -96,9 +96,9 @@ export class UserVideoService {
           id: [youtubeId],
         })
         .then((res: any) => {
-          return res.data.items.map((item: any) => ({
-            title: item.snippet.title,
-            description: item.snippet.description,
+          return res?.data?.items?.map((item: any) => ({
+            title: item?.snippet?.title,
+            description: item?.snippet?.description,
           }))?.[0];
         });
 
@@ -128,12 +128,12 @@ export class UserVideoService {
 
   async find(user: UserProfileEntity): Promise<UserVideoModel[]> {
     const result = await this.userVideoDao.find(undefined, { user: true });
-    const ids = result.map((item: any) => `${item.id}_${user.id}`);
+    const ids = result?.map((item: any) => `${item.id}_${user.id}`);
     const userVideoActions = await this.userVideoActionDao
       .find({ id: In(ids) })
       .then((res) => keyBy(res, "id"));
 
-    return result.map((item: any) => {
+    return result?.map((item: any) => {
       const action = userVideoActions[`${item.id}_${user.id}`];
       return UserVideoModel.mappingToDomain(
         item,

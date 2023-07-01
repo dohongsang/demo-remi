@@ -6,7 +6,6 @@ import { EntityManager } from "typeorm";
 import { AccountDao } from "../../../common/dao/account.dao";
 import { UserDao } from "../../../common/dao/user.dao";
 import { Password } from "../../../core";
-import { Runner } from "../../../core/websocket";
 import { UserModel } from "../../user/models/user.model";
 import { AccountModel } from "../models/account.model";
 import { UserLoginRequest } from "../rest/models/user-login/user-login.req";
@@ -56,14 +55,17 @@ export class AuthService {
     const accountCreated = await this.accountDao.findOne({
       email: req.email,
     });
-    if (!accountCreated) throw new NotFoundError();
+
+    if (!accountCreated || !accountCreated.id || !accountCreated.email) {
+      throw new NotFoundError();
+    }
 
     return {
       accessToken: jwt.sign(
         {
           info: {
-            id: accountCreated?.id,
-            email: accountCreated?.email,
+            id: accountCreated.id,
+            email: accountCreated.email,
           },
         },
         process.env.SECRET_HASH_KEY || "",

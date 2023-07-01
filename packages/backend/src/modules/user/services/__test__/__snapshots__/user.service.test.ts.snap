@@ -1,0 +1,5 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`UserService => Handle to test createUserProfile 1`] = `undefined`;
+
+exports[`UserService => Handle to test createUserProfile 2`] = `[TypeError: Cannot read properties of undefined (reading 'id')]`;

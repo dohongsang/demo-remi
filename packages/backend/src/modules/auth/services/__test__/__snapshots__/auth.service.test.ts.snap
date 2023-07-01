@@ -1,0 +1,3 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`User register a new account, sucessfully 1`] = `Promise {}`;
