@@ -24,10 +24,33 @@ export class Database {
     return Database.datasource;
   }
 
+  destroy() {
+    this.disconnect();
+  }
+
+  static getDatasource(): DataSource {
+    if (Database.datasource) return Database.datasource;
+    const database = new Database();
+    return database.init();
+  }
+
+  static init(): DataSource {
+    throw new Error("Method not implemented.");
+  }
+
   private connect() {
     if (Database.datasource) {
       Database.datasource
         .initialize()
+        .then(() => console.log("Connected!"))
+        .catch((error) => console.log("Connection Fail!", error));
+    }
+  }
+
+  private disconnect() {
+    if (Database.datasource && Database.datasource.isInitialized) {
+      Database.datasource
+        .destroy()
         .then(() => console.log("Connected!"))
         .catch((error) => console.log("Connection Fail!", error));
     }

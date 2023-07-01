@@ -26,7 +26,7 @@ export class Dao {
     try {
       const repo = entityManager
         ? entityManager.getRepository(this.entity)
-        : Database.datasource.getRepository(this.entity);
+        : Database.getDatasource().getRepository(this.entity);
       const row = this.toDao(data);
       row.created_at = new Date().toISOString();
       return await repo.save(row);
@@ -47,7 +47,7 @@ export class Dao {
   ): Promise<UpdateResult> {
     const repo = entityManager
       ? entityManager.getRepository(this.entity)
-      : Database.datasource.getRepository(this.entity);
+      : Database.getDatasource().getRepository(this.entity);
     const row = this.toDao(data);
     row.updated_at = new Date().toISOString();
     return await repo.update(where ? where : row.id, row);
@@ -57,7 +57,7 @@ export class Dao {
     where: FindOptionsWhere<any>,
     relations?: FindOptionsRelations<any>
   ): Promise<any> {
-    const repo = Database.datasource.getRepository(this.entity);
+    const repo = Database.getDatasource().getRepository(this.entity);
 
     const conditions: FindOneOptions<any> = {};
     if (where && !isEmpty(where)) {
@@ -76,7 +76,7 @@ export class Dao {
     where?: FindOptionsWhere<any>,
     relations?: FindOptionsRelations<any>
   ): Promise<any> {
-    const repo = Database.datasource.getRepository(this.entity);
+    const repo = Database.getDatasource().getRepository(this.entity);
 
     const conditions: FindManyOptions<any> = {};
     if (where && !isEmpty(where)) {
@@ -94,7 +94,7 @@ export class Dao {
   async transaction(
     excute: (entityManager: EntityManager) => Promise<unknown>
   ) {
-    const queryRunner = Database.datasource.createQueryRunner();
+    const queryRunner = Database.getDatasource().createQueryRunner();
     const manager = queryRunner.manager;
 
     if (queryRunner) {

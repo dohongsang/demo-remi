@@ -5,9 +5,11 @@
   "license": "MIT",
   "scripts": {
     "dev": "nodemon index.ts",
-    "start": "tsc && ts-node dist/index.js",
+    "build": "tsc",
+    "start": "ts-node dist/index.js",
     "test": "jest --coverage",
-    "test:watch": "jest --verbose --rootDir=src --coverage --watch"
+    "test:watch": "jest --verbose --rootDir=src --coverage --watch",
+    "test:integration": "jest integration"
   },
   "dependencies": {
     "body-parser": "^1.20.2",
