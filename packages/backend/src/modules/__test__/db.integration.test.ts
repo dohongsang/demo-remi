@@ -1,31 +1,16 @@
-import Container from "typedi";
+import request from "supertest";
 import { Password } from "../../core";
-import entities from "../../core/db/entities";
 import "../../core/db/entities/user-account";
 import "../../core/db/entities/user-profile";
-import AuthRestController from "../auth/rest/auth.rest";
 import { UserLoginRequest } from "../auth/rest/models/user-login/user-login.req";
 import { UserRegisterRequest } from "../auth/rest/models/user-register/user-register.req";
-import { AuthService } from "../auth/services/auth.service";
-import { Database } from "../../core/db";
 
 describe("Test Sign Up / Sign In Integration", () => {
-  const database: Database = new Database();
-
-  beforeAll(async () => {
-    await database.init();
-  });
-
-  afterAll(async () => {
-    await database.destroy();
-  });
-
   it("User will sign in and login with this account", async () => {
-    // Sign up with new account
+    const httpRequest = request("https://api.badmem.com");
     const password = new Password();
-    const authService = Container.get(AuthService);
-    const controller = new AuthRestController(authService);
 
+    // Sign up with new account
     const reqRegister: UserRegisterRequest = {
       email: "integration-test@gmail.com",
       password: password.encryptPassword(
@@ -35,18 +20,46 @@ describe("Test Sign Up / Sign In Integration", () => {
       firstName: "Integration",
       lastName: "Test",
     };
-    const resRegister = await controller.register(reqRegister);
-    expect(resRegister.data.id).toBeTruthy();
+
+    httpRequest
+      .post("/api/register")
+      .send(reqRegister)
+      .set("Accept", "application/json")
+      .set(
+        "Authorization",
+        "eyJhbGciOiJIUzUxMiIsInR5cCI6IkpXVCJ9.eyJpbmZvIjp7ImlkIjoiYThjYzBhODYtZDVmZC00M2YxLTk5NjgtYmFjYWQ2ZGI4ZWVjIiwiZW1haWwiOiJzeXN0ZW0tYWRtaW5AZ21haWwuY29tIn0sImlhdCI6MTY4ODA4NDcxOCwiZXhwIjoxNjkwNjc2NzE4fQ.OdHR0VyDXUoRUQxCT1slbT8j6tKiohFN9RkvtHr1sqAlcIdvc6g6eocQWRHHXl9fzYEPEzKFl1DKhnqGQtd67Q"
+      )
+      .then((res) => {
+        expect(res.status).toEqual(200);
+        expect(res.body.accessToken).toBeTruthy();
+      })
+      .catch((error) => {
+        expect(error.status).toEqual(403);
+      });
 
     // Sign in with new above account
     const reqLogin: UserLoginRequest = {
-      username: "integration-test@gmail.com",
+      username: reqRegister.email,
       password: password.encryptPassword(
-        "123123",
-        "ZGVtby1yZW1pLXNvdXJjZS1jb2Rl"
+        "123123", // Password from client
+        "ZGVtby1yZW1pLXNvdXJjZS1jb2Rl" // Key encrypt password from client
       ),
     };
-    const result = await controller.login(reqLogin);
-    expect(result.data.id).toBeTruthy();
+
+    httpRequest
+      .post("/api/login")
+      .send(reqLogin)
+      .set("Accept", "application/json")
+      .set(
+        "Authorization",
+        "eyJhbGciOiJIUzUxMiIsInR5cCI6IkpXVCJ9.eyJpbmZvIjp7ImlkIjoiYThjYzBhODYtZDVmZC00M2YxLTk5NjgtYmFjYWQ2ZGI4ZWVjIiwiZW1haWwiOiJzeXN0ZW0tYWRtaW5AZ21haWwuY29tIn0sImlhdCI6MTY4ODA4NDcxOCwiZXhwIjoxNjkwNjc2NzE4fQ.OdHR0VyDXUoRUQxCT1slbT8j6tKiohFN9RkvtHr1sqAlcIdvc6g6eocQWRHHXl9fzYEPEzKFl1DKhnqGQtd67Q"
+      )
+      .then((res) => {
+        expect(res.status).toEqual(200);
+        expect(res.body.accessToken).toBeTruthy();
+      })
+      .catch((error) => {
+        expect(error.status).toEqual(401);
+      });
   });
 });
